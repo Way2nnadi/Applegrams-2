@@ -2,7 +2,7 @@ var Board = Backbone.Model.extend({
 
   initialize: function () {
 
-    //These functions operate on one or all of the three 2-by-2 matrices used as our model, and built at the bottom of initialize (scroll down).
+    //These functions operate on one or all of the three 20-by-20 matrices used as our Models, and built at the bottom of initialize (scroll down).
     // (0,0) is the coordinate of the top-left-most spot in each matrix.
     //The most important matrix is the "letterMatrix," which holds a value of zero where there are no tiles placed, and values of the letter itself, where it is placed
     //The redLetterMatrix keeps track of valid column-wise words, each letter of each valid is a '1'. The blueLetterMatrix does the same for row-wise words.
@@ -188,7 +188,7 @@ var Board = Backbone.Model.extend({
     this.redLetterMatrix = this.makeEmptyMatrix(20);
     for (i = 0; i < 7; i++) {
       var letter = this.randomLetter();
-      this.addPiece(i, 0, letter);
+      this.addPiece(5 + i, 5, letter);
     }
     
   } // end of initialize
