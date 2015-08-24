@@ -181,7 +181,19 @@ var BoardView = Backbone.View.extend({
 
   //temporary 
   completed: function () {
-    window.alert('Good job!');
+    this.bite();
+  },
+
+  bite: function () {
+    for (var i = 19; i >= 0; i--) {
+      for (var j = 19; j >= 0; j--) {
+        if (this.model.letterMatrix[i][j] !== 0) {
+          this.model.letterMatrix[i+1][j] = this.model.randomLetter();
+          this.tileIt();
+          return; 
+        }
+      }
+    }
   }
 
 });
