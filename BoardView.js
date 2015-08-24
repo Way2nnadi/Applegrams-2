@@ -20,7 +20,12 @@ var BoardView = Backbone.View.extend({
         } else {
           var x = Number($(event.currentTarget).attr('config_x'));
           var y = Number($(event.currentTarget).attr('config_y'));
-          config.switchPieces(x, y, X, Y);
+          if (x === X && y === Y) {
+            config.removePiece(x, y);
+            that.crunch();
+          } else {
+            config.switchPieces(x, y, X, Y);
+          }
           X = Y = 0;
           that.initialize();
         }
@@ -171,7 +176,6 @@ var BoardView = Backbone.View.extend({
         crawler([x, y+1]);
         crawler([x, y-1]);
       }
-       console.log(x, y, count);
     }
     crawler(startPoint);
     if (count === letters) {
@@ -184,16 +188,23 @@ var BoardView = Backbone.View.extend({
     this.bite();
   },
 
+  //places new piece below lowest, most to-the-right, current piece
   bite: function () {
     for (var i = 19; i >= 0; i--) {
       for (var j = 19; j >= 0; j--) {
         if (this.model.letterMatrix[i][j] !== 0) {
-          this.model.letterMatrix[i+1][j] = this.model.randomLetter();
+          this.model.addPiece(j, i+1, this.model.randomLetter());
           this.tileIt();
           return; 
         }
       }
     }
+  },
+
+  crunch: function () {
+    this.bite();
+    this.bite();
+    this.bite();
   }
 
 });

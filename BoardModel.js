@@ -186,6 +186,7 @@ var Board = Backbone.Model.extend({
     this.letterMatrix = this.makeEmptyMatrix(20);
     this.blueLetterMatrix = this.makeEmptyMatrix(20);
     this.redLetterMatrix = this.makeEmptyMatrix(20);
+
     for (i = 0; i < 7; i++) {
       var letter = this.randomLetter();
       this.addPiece(5 + i, 5, letter);
