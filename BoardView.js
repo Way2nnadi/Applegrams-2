@@ -22,7 +22,7 @@ var BoardView = Backbone.View.extend({
           var y = Number($(event.currentTarget).attr('config_y'));
           if (x === X && y === Y) {
             config.removePiece(x, y);
-            that.crunch();
+            that.split();
           } else {
             config.switchPieces(x, y, X, Y);
           }
@@ -201,7 +201,7 @@ var BoardView = Backbone.View.extend({
     }
   },
 
-  crunch: function () {
+  split: function () {
     this.bite();
     this.bite();
     this.bite();
