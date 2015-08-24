@@ -5,7 +5,7 @@ var BoardView = Backbone.View.extend({
 
     //this handles the clicking: first click on piece stores its data. The next click, if on another piece,
     //switches the two; if the second click is made on an empty spot, the original piece is simple moved there.
-    var X = Y = 0, config = this.model, that = this;
+    var X = Y = 0, config = this.model, that = this, chop = false;
     $('rect').on('click', function (event) {
       if (X === 0 && $(event.currentTarget).attr('fill') !== 'white') {
         X = Number($(event.currentTarget).attr('config_x'));
@@ -21,13 +21,20 @@ var BoardView = Backbone.View.extend({
           var x = Number($(event.currentTarget).attr('config_x'));
           var y = Number($(event.currentTarget).attr('config_y'));
           if (x === X && y === Y) {
-            config.removePiece(x, y);
-            that.split();
+            if (chop) {
+              config.removePiece(x, y);
+              that.chop();
+              chop = false;
+              X = Y = 0;
+              that.initialize();
+            } else {
+              chop = true;
+            }
           } else {
             config.switchPieces(x, y, X, Y);
+            X = Y = 0;
+            that.initialize();
           }
-          X = Y = 0;
-          that.initialize();
         }
       }
     });
@@ -201,7 +208,7 @@ var BoardView = Backbone.View.extend({
     }
   },
 
-  split: function () {
+  chop: function () {
     this.bite();
     this.bite();
     this.bite();
