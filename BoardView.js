@@ -51,7 +51,7 @@ var BoardView = Backbone.View.extend({
       .attr({
         'width': this.spacing * this.width,
         'height': this.spacing * this.height,
-      });
+      })
     // it's a twenty-by-twenty grid
     this.tileIt();
   },
