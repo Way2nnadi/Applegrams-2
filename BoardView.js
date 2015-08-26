@@ -44,19 +44,16 @@ var BoardView = Backbone.View.extend({
   render: function () {
     this.$el.html('');
 
-    this.dim = 1200;
-    this.svgIt();
-    this.tileIt();
-  },
-
-  svgIt: function () {
+    this.spacing = 100;
+    this.width = this.model.width;
+    this.height = this.model.height;
     d3.select('body').append('svg')
-              .attr({
-                'width': this.dim,
-                'height': this.dim,
-              });
+      .attr({
+        'width': this.spacing * this.width,
+        'height': this.spacing * this.height,
+      });
     // it's a twenty-by-twenty grid
-    this.spacing = this.dim / 20;
+    this.tileIt();
   },
 
   //this function simply updates the View based off the state of the Model (the three matrices in BoardModel.js)
@@ -67,8 +64,8 @@ var BoardView = Backbone.View.extend({
     var letterMatrix = this.model.letterMatrix;
     var blueLetters = this.model.blueLetterMatrix;
     var redLetters = this.model.redLetterMatrix;
-    for (var y = 0; y < 20; y++) {
-      for (var x = 0; x < 20; x++) {
+    for (var y = 0; y < this.height; y++) {
+      for (var x = 0; x < this.width; x++) {
         d3.select('svg').append('rect').attr({
           'x': x * this.spacing,
           'y': y * this.spacing,
@@ -145,6 +142,24 @@ var BoardView = Backbone.View.extend({
               'config_x': x
             });
           }
+          if (y === 0) {
+            JSON.stringify(this.model.redLetterMatrix);
+            this.model.makeBigger('top');
+            JSON.stringify(this.model.redLetterMatrix);
+            this.tileIt();
+          }
+          if (x === 0) {
+            this.model.makeBigger('left');
+            this.tileIt();
+          }
+          // if (y >= this.height - 2) {
+          //   this.model.makeBigger('bottom');
+          //   this.tileIt();
+          // }
+          // if (x >= this.width -2) {
+          //   this.model.makeBigger('right');
+          //   this.tileIt();
+          // }
         }
       }
     }
@@ -162,12 +177,12 @@ var BoardView = Backbone.View.extend({
       letterMatrix.push(this.model.letterMatrix[i].slice());
     }
 
-    for (i = 0; i < 20; i++) {
-      for (var j = 0; j < 20; j++) {
+    for (i = 0; i < this.height; i++) {
+      for (var j = 0; j < this.width; j++) {
         if (letterMatrix[i][j] !== 0) {
           var startPoint = [j, i];
-          i += 20;
-          j += 20;
+          i += this.height;
+          j += this.width;
         }
       }
     }
@@ -197,21 +212,22 @@ var BoardView = Backbone.View.extend({
 
   //places new piece below lowest, most to-the-right, current piece
   bite: function () {
-    for (var i = 19; i >= 0; i--) {
-      for (var j = 19; j >= 0; j--) {
+    for (var i = this.height-1; i >= 0; i--) {
+      for (var j = this.width-1; j >= 0; j--) {
         if (this.model.letterMatrix[i][j] !== 0) {
-          this.model.addPiece(j, i+1, this.model.randomLetter());
+          this.model.addPiece(2, i+1, this.model.randomLetter());
           this.tileIt();
-          return; 
+          return i+1; 
         }
       }
     }
   },
 
   chop: function () {
-    this.bite();
-    this.bite();
-    this.bite();
+    var spot = this.bite();
+    this.model.addPiece(3, spot, this.model.randomLetter());
+    this.model.addPiece(4, spot, this.model.randomLetter());
+    this.tileIt();
   }
 
 });
